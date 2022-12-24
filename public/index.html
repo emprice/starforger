@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script src="/static/starforger.bundle.js"></script>
+</head>
+<body>
+  <div id="widget"></div>
+  <script>
+    var elem = document.getElementById("widget");
+    var widget = new starforger.TransitWidget(elem);
+
+    window.addEventListener("beforeunload", (e) => {
+      widget.finalize();
+    });
+  </script>
+</body>
+</html>
