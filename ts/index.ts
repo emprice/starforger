@@ -106,18 +106,25 @@ export class TransitWidget {
       else this.two.pause();
     });
 
+    const width = 800, height = 450;
+
     this.two = new Two({
-      fullscreen: true
+      fullscreen: false,
+      fitted: false,
+      autostart: false,
+      width: width,
+      height: height,
+      type: Two.Types.svg
     }).appendTo(viewport);
+
+    this.two.renderer.domElement.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+    this.two.renderer.domElement.setAttribute('viewBox', `0 0 ${width} ${height}`);
+    this.two.renderer.domElement.style.width = '100%';
+    this.two.renderer.domElement.style.height = '100%';
 
     this.radius = this.two.width * 0.25;
     this.x = this.two.width * 0.5;
     this.y = this.two.height * 0.5;
-
-    const bg = this.two.makeRectangle(this.x, this.y,
-      this.two.width, this.two.height);
-    bg.noStroke();
-    bg.fill = 'black';
 
     this.circle = this.two.makeCircle(this.x, this.y, this.radius);
     this.circle.stroke = 'black';

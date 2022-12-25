@@ -1,0 +1,19 @@
+@import 'reset';
+
+html, body, #widget, .transitWidgetViewport {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+#widget {
+  background-color: black;
+}
+
+.transitWidgetViewport {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+// vim: set ft=scss:
