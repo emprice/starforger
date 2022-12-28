@@ -1,19 +1,34 @@
 @import 'reset';
+@import 'dat/gui/style';
 
+// make all boxes fill their available space
 html, body, #widget, .transitWidgetViewport {
   width: 100%;
   height: 100%;
   position: relative;
 }
 
+// nice, space-y background
 #widget {
   background-color: black;
 }
 
+// center horizontally and vertically
 .transitWidgetViewport {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.dg {
+  font-size: 14px;  // make font bigger than default for dat.gui
+
+  // for checkboxes, changing the "accent-color" attribute lets us control
+  // the color when the box is enabled and overrides the OS-specific settings
+  .boolean input {
+    padding: 0;                     // make the box bigger by removing padding
+    accent-color: $number-color;    // use the same color as dat.gui sliders
+  }
 }
 
 // vim: set ft=scss:

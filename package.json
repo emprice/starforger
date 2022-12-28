@@ -7,7 +7,7 @@
     "build:wasm": "make -C src",
     "build:js": "npx tsc",
     "build:webpack": "npx webpack -c webpack.config.cjs",
-    "build:css": "npx sass -s compressed scss/starforger.scss public/static/starforger.css"
+    "build:css": "npx sass -s compressed -I node_modules/dat.gui/src scss/starforger.scss public/static/starforger.css"
   },
   "devDependencies": {
     "@swc/cli": "^0.1.57",

@@ -17,17 +17,29 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /mandelagol.js$/,
+        test: /compute.js$/,
         loader: 'exports-loader',
         options: {
-          exports: 'default mandelagol'
+          exports: 'default compute'
         }
       },
       {
-        test: /mandelagol.wasm$/,
+        test: /compute.wasm$/,
         type: 'asset/resource',
         generator: {
           filename: '[name].wasm'
+        }
+      },
+      {
+        // NOTE: this is a nifty hack to keep dat.gui (or anything else) from
+        // loading inline css; instead, we trick it into loading an empty
+        // string so we can customize the css ourselves
+        test: /\.scss$/,
+        type: 'asset/inline',
+        generator: {
+          dataUrl: (content) => {
+            return 'data:';
+          }
         }
       }
     ]
