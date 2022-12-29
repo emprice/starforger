@@ -1,5 +1,7 @@
 @import 'reset';
 @import 'dat/gui/style';
+@import 'introjs';
+@import 'themes/introjs-modern';
 
 // make all boxes fill their available space
 html, body, #widget, .transitWidgetViewport {
@@ -29,6 +31,12 @@ html, body, #widget, .transitWidgetViewport {
     padding: 0;                     // make the box bigger by removing padding
     accent-color: $number-color;    // use the same color as dat.gui sliders
   }
+}
+
+// tweak for intro.js to match label with dialog
+.introjs-dontShowAgain label {
+  color: unset !important;
+  background-color: unset !important;
 }
 
 // vim: set ft=scss:

@@ -2,7 +2,8 @@ import Two from 'two.js';
 import { Path } from 'two.js/src/path';
 import { Circle } from 'two.js/src/shapes/circle';
 
-import * as dat from 'dat.gui/src/dat';
+import * as dat from 'dat.gui/src/dat/index.js';
+import * as introJs from 'intro.js/intro.js';
 
 import compute from 'autogen/compute.js';
 import 'autogen/compute.wasm';
@@ -15,15 +16,16 @@ interface IPointerArray {
 
 /// Configuration parameters for the widget
 interface ITransitWidgetConfig {
-  p: number;        ///< Radius ratio Rp/Rs
-  gamma1: number;   ///< Linear limb darkening coefficient
-  gamma2: number;   ///< Quadratic limb darkening coefficient
-  Teff: number;     ///< Stellar effective temperature
-  mass: number;     ///< Mass ratio Ms/Mp
-  a: number;        ///< Semimajor axis a/Rs
-  ecc: number;      ///< Orbital eccentricity
-  omega: number;    ///< Argument of periastron
-  playing: boolean; ///< Is the simulation currently animating?
+  p: number;            ///< Radius ratio Rp/Rs
+  gamma1: number;       ///< Linear limb darkening coefficient
+  gamma2: number;       ///< Quadratic limb darkening coefficient
+  Teff: number;         ///< Stellar effective temperature
+  mass: number;         ///< Mass ratio Ms/Mp
+  a: number;            ///< Semimajor axis a/Rs
+  ecc: number;          ///< Orbital eccentricity
+  omega: number;        ///< Argument of periastron
+  playing: boolean;     ///< Is the simulation currently animating?
+  explain: () => void;  ///< Run the intro tour again
 }
 
 export class TransitWidget {
@@ -69,7 +71,12 @@ export class TransitWidget {
       a: 1000,
       ecc: 0.1,
       omega: 0.5 * Math.PI,
-      playing: true
+      playing: true,
+      explain: () => {
+        this.tour.setOption('dontShowAgain', false);
+        this.two.pause();
+        this.tour.start();
+      }
     };
 
     // set up parameter groups
@@ -90,6 +97,7 @@ export class TransitWidget {
 
     // set up global controls
     var playControl = this.gui.add(this.config, 'playing');
+    var explainControl = this.gui.add(this.config, 'explain');
 
     var allControls = [pControl, gamma1Control, gamma2Control, teffControl,
       massControl, aControl, eccControl, omegaControl];
@@ -235,9 +243,56 @@ export class TransitWidget {
       }
     });
 
-    // if everything is ready, start the animation
+    // set up our nifty how-to tour
+    this.tour = introJs().setOptions({
+      disableInteraction: true,
+      showStepNumbers: true,
+      dontShowAgain: true,
+      steps: [
+        {
+          title: 'Hello, world!',
+          intro: 'Welcome to <b>STARFORGER</b>, the fanciest real-time transit light curve simulator on the Web. Possibly the Universe.'
+        },
+        {
+          element: this.gui.domElement,
+          intro: 'You can use these controls to change parameters that affect the planet\'s transit.',
+          position: 'left'
+        },
+        {
+          element: folder1.domElement,
+          intro: 'These controls change the relative planet size, limb darkening parameters, and stellar effective temperature.',
+          position: 'left'
+        },
+        {
+          element: folder2.domElement,
+          intro: 'These controls change the physical parameters of the star-planet system, thereby modifying the orbit.',
+          position: 'left'
+        },
+        {
+          title: 'All done!',
+          intro: 'To pause the simulation, press the spacebar at any time.'
+        }
+      ]
+    });
+
+    // open folders right before they are introduced
+    this.tour.onbeforechange((elem: any) => {
+      if (elem === folder1.domElement) {
+        folder1.open();
+      } else if (elem === folder2.domElement) {
+        folder2.open();
+      }
+    });
+
+    // start the tour as soon as possible; when everything is ready,
+    // start the animation
     this.compute.then((instance) => {
-      this.two.play();
+
+      this.two.update();
+      this.tour.start();
+      this.tour.oncomplete(() => {
+        this.two.play();
+      });
     });
   }
 
@@ -388,6 +443,7 @@ export class TransitWidget {
 
   protected two: Two;
   protected gui: typeof dat.GUI;
+  protected tour: typeof introJs;
 
   protected x0: number;     ///< Horizontal center of canvas
   protected y0: number;     ///< Vertical center of canvas
