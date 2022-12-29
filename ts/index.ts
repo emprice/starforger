@@ -10,8 +10,8 @@ import 'autogen/compute.wasm';
 
 /// Wrapper for an array backed by WASM-accessible memory
 interface IPointerArray {
-  array: Float64Array;  ///< Javascript array
-  ptr: number;          ///< WASM memory pointer
+  array: Float64Array | null;   ///< Javascript array
+  ptr: number;                  ///< WASM memory pointer
 }
 
 /// Configuration parameters for the widget
@@ -237,7 +237,7 @@ export class TransitWidget {
 
       // frame loop draws transit moving across the stellar disk
       const idx = frame % TransitWidget.nsamp;
-      if (this.transit) {
+      if ((this.transit !== null) && (this.t.array !== null)) {
         this.transit.ending = this.t.array[idx] /
           this.t.array[TransitWidget.nsamp-1];
       }
@@ -293,6 +293,9 @@ export class TransitWidget {
       this.tour.oncomplete(() => {
         this.two.play();
       });
+      this.tour.onexit(() => {
+        this.two.play();
+      });
     });
   }
 
@@ -331,6 +334,8 @@ export class TransitWidget {
 
     // when the library is ready...
     this.compute.then((instance: any) => {
+
+      if ((this.x.array === null) || (this.flux.array === null)) return;
 
       // ... re-calculate the transit fluxes
       instance._mandelagolArray(this.config.p, this.x.ptr, this.config.gamma1,
@@ -371,6 +376,8 @@ export class TransitWidget {
 
     // when the library is ready...
     this.compute.then((instance) => {
+
+      if (this.rgb.array === null) return;
 
       // ... compute the blackbody color values for a given Teff
       instance._blackbodyToRgb(this.config.Teff, this.rgb.ptr);
@@ -435,6 +442,7 @@ export class TransitWidget {
 
   static freeArray(instance: any, array: IPointerArray) {
 
+    array.array = null;
     instance._free(array.ptr);
     array.ptr = 0;
   }

@@ -5,7 +5,7 @@ LDFLAGS = -s WASM=1 -s EXPORTED_FUNCTIONS="['_malloc', '_free']" \
 
 default: ../js/compute.js
 
-../js/compute.js: blackbody.o mandelagol.o orbit.o
+../js/compute.js: blackbody.o mandelagol.o orbit.o extras.o
 	emcc $(CFLAGS) $(LDFLAGS) $^ -o $@
 
 %.o: %.c Makefile

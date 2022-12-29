@@ -1,3 +1,10 @@
+/**
+ * @file mandelagol.c
+ *
+ * Implementation of the Mandel & Agol (2002) quadratic limb darkening
+ * transit model
+ */
+
 #include <math.h>
 #include <stdlib.h>
 #include <emscripten.h>
@@ -16,7 +23,7 @@ inline double sqr(double x)
 }
 
 /**
- * @brief Evaluates the Mandel & Agol (2008) quadratic limb darkened
+ * @brief Evaluates the Mandel & Agol (2002) quadratic limb darkened
  * transit model at a single value of the input parameters
  *
  * @param[in] p Relative size of the planet (planet radius divided by

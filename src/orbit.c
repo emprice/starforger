@@ -1,3 +1,10 @@
+/**
+ * @file orbit.c
+ *
+ * Tools for computing the orbital displacement of a secondary relative to
+ * a primary body
+ */
+
 #define _GNU_SOURCE
 
 #include <math.h>
